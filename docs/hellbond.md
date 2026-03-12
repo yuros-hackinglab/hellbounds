@@ -23,10 +23,10 @@ For this research, we are using some distros linux for testing:
 | Distro       |
 | ------------ |
 | Arch Linux   |
+| Alpine Linux |
 | Alma Linux   |
 | Debian Linux |
 | Ubuntu Linux |
-| Screen       |
 
 The following applications were used to support this research on linux:
 
