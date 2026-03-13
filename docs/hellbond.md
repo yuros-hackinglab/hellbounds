@@ -120,7 +120,7 @@ This section explains the experimental implementation of MPD (Music Player Daemo
 
 The documentation in this section covers several main stages of the experiment, including installation, configuration, directory preparation, and service management.
 ### 4.2.1 Arch Linux
-#### 4.2.1.1 Installation Process
+### 4.2.1.1 Installation Process
 
 This stage explains the installation of required packages needed to run MPD with a modern Linux audio stack.
 
@@ -137,7 +137,7 @@ The packages installed during this experiment include:
 
 Installation was performed using the Arch Linux package manager **pacman**.
 
-#### 4.2.1.2 Directory Preparation
+### 4.2.1.2 Directory Preparation
 MPD requires several directories to store music files and operational data such as playlists, logs, and database files. These directories were created manually within the user's home directory.
 
 The following directory structure was used during the experiment:
@@ -164,7 +164,7 @@ mkdir /home/[user]/.config/mpd/logs
 Replace [user] with the username used on your system.
 
 Creating this directory structure allows MPD to properly manage the music library and store runtime information.
-#### 4.2.1.3 Configuration
+### 4.2.1.3 Configuration
 MPD is configured using the mpd.conf configuration file. This file defines how MPD accesses the music library, where metadata is stored, and how the daemon communicates with client applications.
 
 The configuration file was edited using a text editor.
@@ -204,7 +204,7 @@ audio_output {
 ```
 This configuration enables MPD to output audio through the PipeWire sound server, which is commonly used in modern Linux audio environments.
 
-##### 4.2.1.3 Service Management
+### 4.2.1.3 Service Management
 
 MPD services are managed using systemd, the default service manager used in Arch Linux.
 
@@ -214,7 +214,7 @@ Mode	Description
 User Mode	Runs under the user's session (recommended for desktop systems)
 System Mode	Runs as a global system service (recommended for headless servers)
 
-###### 4.2.1.3.1 User Mode (Recommended)
+### 4.2.1.3.1 User Mode (Recommended)
 
 User mode allows MPD to run under the current user environment. This mode gives MPD direct access to the user's home directory and music library.
 
@@ -234,7 +234,7 @@ Enable the required PipeWire audio services:
 ```
 systemctl --user --now enable pipewire pipewire-pulse wireplumber
 ```
-###### 4.2.1.3.2 System Mode
+#### 4.2.1.3.2 System Mode
 
 System mode allows MPD to run as a system-level service controlled by the operating system.
 
@@ -279,7 +279,7 @@ mpc play
 If the commands execute successfully and audio playback occurs without errors, the MPD implementation is considered successfully deployed.
 
 ### 4.2.2 Alma Linux
-#### 4.2.2.1. Pre-Installation
+### 4.2.2.1. Pre-Installation
 
 Before installing MPD and the required audio components, several system preparation steps were performed to enable repositories and update the AlmaLinux release metadata.
 
@@ -300,17 +300,17 @@ Clean cached package metadata:
 sudo dnf clean all
 ```
 These steps prepare the system for installing additional repositories and dependencies.
-#### 4.2.2.2 Installation
+### 4.2.2.2 Installation
 
 The installation stage includes enabling additional repositories and installing the required packages.
 
-##### 4.2.2.2.1 Enable EPEL Repository
+### 4.2.2.2.1 Enable EPEL Repository
 
 The Extra Packages for Enterprise Linux (EPEL) repository provides additional packages that are not included in the default AlmaLinux repositories.
 ```
 sudo dnf update && sudo dnf install epel-release
 ```
-##### 4.2.2.2.2 Install Distribution GPG Keys
+### 4.2.2.2.2 Install Distribution GPG Keys
 
 The system must verify packages using trusted GPG keys before installing packages from external repositories.
 ```
@@ -343,8 +343,8 @@ The installed components include:
 | `pipewire-alsa` | ALSA compatibility layer |
 | `pipewire-pulseaudio` | PulseAudio compatibility |
 | `wireplumber` | PipeWire session manager |
-#### 4.2.2.3 Configuration
-##### 4.2.2.3.1 Configuration File Locations
+### 4.2.2.3 Configuration
+### 4.2.2.3.1 Configuration File Locations
 MPD requires several directories to store music files, playlists, and operational data.
 During the experiment, the following directory structure was created inside the user home directory.
 
@@ -366,7 +366,7 @@ touch /home/[user]/.mpd/{mpd.db,mpd.log,mpd.pid,mpdstate}
 ```
 Berikut adalah format Markdown (.md) untuk bagian parameter konfigurasi dan contoh file mpd.conf yang Anda berikan:
 
-##### 4.2.2.3.1 Core Configuration Parameters
+### 4.2.2.3.1 Core Configuration Parameters
 
 | Parameter | Description |
 | :--- | :--- |
@@ -396,7 +396,7 @@ audio_output {
         name            "PipeWire Sound Server"
 }
 ```
-#### 4.2.2.4 Service Management
+### 4.2.2.4 Service Management
 
 MPD services are controlled using systemd, which is the default service manager in AlmaLinux.
 MPD can operate in two modes:
@@ -406,7 +406,7 @@ MPD can operate in two modes:
 | User Mode | Runs under the user's session (recommended for desktop environments) |
 | System Mode | Runs as a system-level service |
 
-##### 4.2.2.4.1 User Mode (Recommended)
+### 4.2.2.4.1 User Mode (Recommended)
 
 In this experiment, MPD was executed in user mode so it can directly access the user music library.
 
@@ -432,7 +432,7 @@ systemctl --user --now enable pipewire wireplumber
 ```
 This configuration ensures that MPD starts automatically when the user session begins.
 
-#### 4.2.3.4 Experiment Verification
+### 4.2.3.4 Experiment Verification
 The final stage of the experiment verifies that the MPD server is functioning correctly.
 Verification steps include:
 
@@ -454,7 +454,7 @@ mpc play
 ```
 If the commands execute successfully and audio playback occurs, the MPD server implementation on AlmaLinux is considered successful.
 ### 4.2.4 Alpine Linux
-#### 4.2.4.1 Installation Process
+### 4.2.4.1 Installation Process
 
 The first stage of the experiment involves installing the required packages for MPD and the audio subsystem.
 
@@ -473,7 +473,7 @@ Installation command used during the experiment:
 ```bash
 sudo apk add mpd pulseaudio pulseaudio-utils alsa-plugins-pulse neovim
 ```
-##### 4.2.4.2 Directory Preparation
+### 4.2.4.2 Directory Preparation
 
 MPD requires a directory structure for storing music files, playlists, and runtime database information.
 The following directories were created during the experiment:
@@ -498,6 +498,7 @@ touch /home/[user]/.config/mpd/mpd.db
 -> Note: Replace [user] with the username used on your system.
 
 These directories allow MPD to manage the music library and store metadata required for playback operations.
+### 4.2.4.3 Configuration
 
 # 5. Conclusion
 
