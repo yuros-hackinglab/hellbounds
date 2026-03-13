@@ -453,8 +453,8 @@ mpc add <music-file>
 mpc play
 ```
 If the commands execute successfully and audio playback occurs, the MPD server implementation on AlmaLinux is considered successful.
-### 4.2.4 Alpine Linux
-### 4.2.4.1 Installation Process
+### 4.2.3 Alpine Linux
+### 4.2.3.1 Installation Process
 
 The first stage of the experiment involves installing the required packages for MPD and the audio subsystem.
 
@@ -473,7 +473,7 @@ Installation command used during the experiment:
 ```bash
 sudo apk add mpd pulseaudio pulseaudio-utils alsa-plugins-pulse neovim
 ```
-### 4.2.4.2 Directory Preparation
+### 4.2.3.2 Directory Preparation
 
 MPD requires a directory structure for storing music files, playlists, and runtime database information.
 The following directories were created during the experiment:
@@ -498,7 +498,100 @@ touch /home/[user]/.config/mpd/mpd.db
 -> Note: Replace [user] with the username used on your system.
 
 These directories allow MPD to manage the music library and store metadata required for playback operations.
-### 4.2.4.3 Configuration
+### 4.2.3.3 Configuration
+MPD configuration is defined in the mpd.conf file. This configuration determines where music files are stored, how MPD manages its database, and how the server communicates with clients.Edit the configuration 
+```
+nvim /home/[user]/.config/mpd/mpd.conf
+```
+| Parameter | Description |
+| :--- | :--- |
+| `music_directory` | Directory containing music files |
+| `playlist_directory` | Directory used to store playlists |
+| `log_file` | Logging output location |
+| `pid_file` | Process ID file |
+| `state_file` | Playback state file |
+| `sticker_file` | Metadata storage file |
+| `bind_to_address` | Network address used by MPD |
+| `port` | Communication port for MPD clients |<
+
+Example configuration used in the experiment:
+```
+music_directory         "/home/[user]/music"
+playlist_directory      "/home/[user]/.config/mpd/playlists"
+log_file                "syslog"
+pid_file                "/home/[user]/.config/mpd/mpd.pid"
+state_file              "/home/[user]/.config/mpd/mpd.state"
+sticker_file            "/home/[user]/.config/mpd/mpd.sticker"
+bind_to_address         "any"
+port                    "6600"
+log_level               "default"
+auto_update             "yes"
+
+database {
+    plugin "simple"
+    path "/home/[user]/music/.config/mpd/mpd.db"
+}
+
+audio_output {
+    type            "pulse"
+    name            "Pulse"
+}
+```
+In this configuration, MPD uses PulseAudio as the audio backend, allowing audio playback through the system's sound server.
+### 4.2.4.4 Service ManagementMPD 
+MPD services are controlled using systemd. MPD can operate in two modes:
+| Mode | Description |
+| :--- | :--- |
+| User Mode | Runs under the user's session (recommended for desktop environments) |
+| System Mode | Runs as a system-level service |
+ 
+### 4.2.4.3.1 User Mode
+In this experiment, MPD was executed in user mode so it can directly access the user music library.
+
+Disable the default system socket:
+```
+Bash
+sudo systemctl disable mpd.socket
+```
+Enable the user service:
+```
+Bash
+systemctl enable --user mpd.socket
+```
+Start the user service:
+```
+Bash
+systemctl start --user mpd.socket
+```
+Enable the PipeWire audio services:
+```
+Bash
+systemctl --user --now enable pipewire wireplumber
+```
+This configuration ensures that MPD starts automatically when the user session begins.
+
+### 4.2.3.5 Experiment Verification
+The final stage of the experiment verifies that the MPD server is functioning correctly.
+Verification steps include:
+
+Ensuring the MPD socket service is active
+
+Confirming PipeWire and WirePlumber services are running
+
+Connecting to the MPD server using MPC
+
+Testing playback commands
+
+Example testing commands:
+```
+Bash
+mpc update
+mpc listall
+mpc add <music-file>
+mpc play
+```
+If the commands execute successfully and audio playback occurs, the MPD server implementation is considered successful.
+
 
 # 5. Conclusion
 
