@@ -592,9 +592,289 @@ mpc play
 ```
 If the commands execute successfully and audio playback occurs, the MPD server implementation is considered successful.
 
+### 4.2.4 Debian Linux
+### 4.2.4.1 Installation Process
+
+The first stage of the experiment involves installing the required packages for MPD and the audio subsystem.
+
+The following packages were installed using Debian's **APT package manager**:
+
+| Package | Description |
+|--------|-------------|
+| **mpd** | Music Player Daemon used as the main audio server |
+| **pipewire** | Modern multimedia server used for audio and video routing |
+| **pipewire-pulse** | PulseAudio compatibility layer for PipeWire |
+| **pipewire-alsa** | ALSA plugin for PipeWire integration |
+| **pipewire-jack** | JACK compatibility layer for PipeWire |
+| **wireplumber** | PipeWire session manager |
+
+Installation command used during the experiment:
+
+```bash
+sudo apt update && sudo apt install mpd pipewire pipewire-pulse pipewire-alsa pipewire-jack wireplumber
+```
+### 4.2.4.2 Directory Preparation
+
+MPD requires a directory structure for storing music files, playlists, and runtime database information.
+
+The following directories were created during the experiment:
+
+| Directory | Purpose |
+| :--- | :--- |
+| `/home/[user]/music` | Storage location for music files |
+| `/home/[user]/.config/mpd/playlists` | Playlist storage directory |
+| `/home/[user]/.config/mpd/logs` | Directory used to store MPD logs |
+
+Create the directories using the following commands:
+
+```bash
+mkdir /home/[user]/music
+mkdir -p /home/[user]/.config/mpd/playlists
+mkdir -p /home/[user]/.config/mpd/logs
+```
+### 4.2.4.3 Configuration
+
+MPD configuration is defined in the `mpd.conf` file. This configuration determines where music files are stored, how MPD manages its database, and how the server communicates with clients.
+
+Edit the configuration file:
+
+```bash
+nvim /home/[user]/mpd/mpd.conf
+```
+| Parameter | Description |
+| :--- | :--- |
+| `music_directory` | Directory containing music files |
+| `playlist_directory` | Directory used to store playlists |
+| `db_file` | Database file containing music metadata |
+| `log_file` | Logging output location |
+| `pid_file` | Process ID file |
+| `state_file` | Playback state file |
+| `sticker_file` | Metadata storage file |
+| `bind_to_address` | Network address used by MPD |
+| `port` | Communication port for MPD clients |
+
+Example configuration used in the experiment:
+
+```conf
+music_directory "/home/[user]/music"
+playlist_directory "/home/[user]/.config/mpd/playlists"
+db_file            "/home/[user]/.config/mpd/database"
+log_file           "/home/[user]/.config/mpd/log"
+pid_file           "/home/[user]/.config/mpd/pid"
+state_file         "/home/[user]/.config/mpd/state"
+sticker_file       "/home/[user]/.config/mpd/sticker.sql"
+bind_to_address    "any"
+port               "6600"
+
+audio_output {
+        type            "pipewire"
+        name            "PipeWire Sound Server"
+}
+```
+In this configuration, MPD uses PipeWire as the audio backend, allowing integration with modern Linux audio systems while maintaining compatibility with PulseAudio and JACK.
+### 4.2.4.4 Service Management
+
+MPD services are controlled using **systemd**, which is the default service manager in Debian.
+
+MPD can operate in two modes:
+
+| Mode | Description |
+| :--- | :--- |
+| User Mode | Runs under the user's session (recommended for desktop environments) |
+| System Mode | Runs as a system-level service |
+
+---
+
+### 4.2.4.4.1 User Mode (Recommended)
+
+In this experiment, MPD was executed in **user mode** so it can directly access the user music library.
+
+Disable the default system socket:
+
+```bash
+sudo systemctl disable mpd.socket
+```
+Enable the user service:
+```
+systemctl enable --user mpd.socket
+```
+Start the user service:
+```
+systemctl start --user mpd.socket
+```
+Enable the PipeWire audio services:
+```
+systemctl --user --now enable pipewire pipewire-pulse wireplumber
+```
+This configuration ensures that MPD starts automatically when the user session begins.
+
+4.2.4.5 Experiment Verification
+
+The final stage of the experiment verifies that the MPD server is functioning correctly.
+
+- Verification steps include:
+- Ensuring the MPD socket service is active
+- Confirming PipeWire and WirePlumber services are runnin
+- Connecting to the MPD server using MPC
+- Testing playback commands
+
+Example testing commands:
+```
+mpc update
+mpc listall
+mpc add <music-file>
+mpc play
+```
+If the commands execute successfully and audio playback occurs, the MPD server implementation is considered successful.
+
+### 4.2.5 Ubuntu Linux
+
+### 4.2.5.1 Installation Process
+
+The first stage of the experiment involves installing the required packages for MPD and the audio subsystem.
+
+The following packages were installed using Ubuntu's **APT package manager**:
+
+| Package | Description |
+|--------|-------------|
+| **mpd** | Music Player Daemon used as the main audio server |
+| **pipewire** | Multimedia server used for handling audio streams |
+| **pipewire-pulse** | PulseAudio compatibility layer for PipeWire |
+| **pipewire-alsa** | ALSA plugin for PipeWire |
+| **pipewire-jack** | JACK compatibility layer for PipeWire |
+| **wireplumber** | PipeWire session manager |
+
+Installation command used during the experiment:
+
+```bash
+sudo apt update && sudo apt install mpd pipewire pipewire-pulse pipewire-alsa pipewire-jack wireplumber
+```
+4.2.5.2 Directory Preparation
+
+MPD requires a directory structure for storing music files, playlists, and runtime database information.
+
+The following directories were created during the experiment:
+
+| Directory | Purpose |
+| :--- | :--- |
+| `/home/[user]/music` | Storage location for music files |
+| `/home/[user]/.mpd/playlists` | Playlist storage directory |
+| `/home/[user]/.mpd` | MPD configuration and database directory |
+
+
+Create the directories using the following commands:
+```
+mkdir /home/[user]/music
+mkdir -p /home/[user]/.mpd/playlists
+touch /home/[user]/.mpd/{mpd.db,mpd.log,mpd.pid,mpdstate}
+```
+-> Note: Replace [user] with the username used on your system.
+
+These directories allow MPD to manage the music library, playlists, and runtime data required for playback operations.
+
+### 4.2.5.3 Configuration
+
+MPD configuration is defined in the `mpd.conf` file. This configuration determines where music files are stored, how MPD manages its database, and how the server communicates with clients.
+
+Edit the configuration file:
+
+```bash
+nvim /home/[user]/mpd/mpd.conf
+```
+| Parameter | Description |
+| :--- | :--- |
+| `music_directory` | Directory containing music files |
+| `playlist_directory` | Directory used to store playlists |
+| `db_file` | Database file containing music metadata |
+| `log_file` | Logging output location |
+| `pid_file` | Process ID file |
+| `state_file` | Playback state file |
+| `sticker_file` | Metadata storage file |
+| `bind_to_address` | Network address used by MPD |
+| `port` | Communication port for MPD clients |
+
+Example configuration used in the experiment:
+
+```conf
+music_directory "/home/[user]/music"
+playlist_directory "/home/[user]/.config/mpd/playlists"
+db_file            "/home/[user]/.config/mpd/database"
+log_file           "/home/[user]/.config/mpd/log"
+pid_file           "/home/[user]/.config/mpd/pid"
+state_file         "/home/[user]/.config/mpd/state"
+sticker_file       "/home/[user]/.config/mpd/sticker.sql"
+bind_to_address    "any"
+port               "6600"
+
+audio_output {
+        type            "pipewire"
+        name            "PipeWire Sound Server"
+}
+```
+MPD services are controlled using **systemd**, which is the default service manager in Debian.
+
+MPD can operate in two modes:
+
+| Mode | Description |
+| :--- | :--- |
+| User Mode | Runs under the user's session (recommended for desktop environments) |
+| System Mode | Runs as a system-level service |
+
+---
+
+### 4.2.4.4.1 User Mode (Recommended)
+
+In this experiment, MPD was executed in **user mode** so it can directly access the user music library.
+
+Disable the default system socket:
+
+```bash
+sudo systemctl disable mpd.socket
+```
+Enable the user service:
+```
+systemctl enable --user mpd.socket
+```
+Start the user service:
+```
+systemctl start --user mpd.socket
+```
+Enable the PipeWire audio services:
+```
+systemctl --user --now enable pipewire pipewire-pulse wireplumber
+```
+This configuration ensures that MPD starts automatically when the user session begins.
+
+4.2.4.5 Experiment Verification
+
+The final stage of the experiment verifies that the MPD server is functioning correctly.
+
+- Verification steps include:
+- Ensuring the MPD socket service is active
+- Confirming PipeWire and WirePlumber services are runnin
+- Connecting to the MPD server using MPC
+- Testing playback commands
+
+Example testing commands:
+```
+mpc update
+mpc listall
+mpc add <music-file>
+mpc play
+```
+If the commands execute successfully and audio playback occurs, the MPD server implementation is considered successful.
 
 # 5. Conclusion
+# 5. Conclusion
 
-- 
+This research demonstrates the feasibility of building a **self-hosted music server using Music Player Daemon (MPD)** across multiple Linux distributions. Through systematic testing and configuration on **Arch Linux, Alpine Linux, AlmaLinux, Debian Linux, and Ubuntu Linux**, the experiment confirms that MPD provides a lightweight, flexible, and efficient solution for managing personal music libraries while maintaining full control over data and playback infrastructure.
+
+The results show that although each distribution uses different package managers and system configurations, the **core architecture and operational workflow of MPD remain consistent**. The implementation process generally involves several key stages: installing the required packages, preparing the directory structure for music libraries and runtime data, configuring the `mpd.conf` file, and managing the MPD service using `systemd`.
+
+The experiment also confirms that modern Linux audio systems such as **PipeWire and PulseAudio** integrate effectively with MPD, enabling reliable audio playback across different environments. Additionally, the use of **MPC as a command-line client** proves that MPD can be controlled efficiently without requiring a graphical interface, making it suitable for both desktop environments and headless servers.
+
+From the experimental verification stage, all tested distributions successfully executed core MPD operations such as updating the music database, listing available media, adding tracks to the playlist, and performing playback commands. This confirms that the MPD server was deployed and configured correctly in each environment.
+
+Overall, this project shows that **MPD is a stable, resource-efficient, and distribution-agnostic solution for building a private music streaming system**. By following the structured implementation methods documented in this research, users can deploy their own MPD-based music server and maintain complete digital sovereignty over their audio collections.
 
 # 6. Reference
